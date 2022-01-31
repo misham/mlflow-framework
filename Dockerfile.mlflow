@@ -1,0 +1,16 @@
+FROM continuumio/anaconda3
+
+ENV TERM xterm-256color
+
+EXPOSE 5000
+
+RUN apt-get update -y && apt-get upgrade -y
+RUN pip install psycopg2-binary && pip install mlflow[extras]
+
+RUN mkdir /mlflow
+VOLUME /mlflow
+
+RUN mkdir /mlflow/mlruns
+RUN mkdir /mlflow/mlartifacts
+
+WORKDIR /mlflow

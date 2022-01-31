@@ -1,0 +1,30 @@
+---
+version: "3.7"
+
+volumes:
+  db_data:
+    external: true
+
+services:
+  db:
+    image: postgres:13.5
+    environment:
+      - POSTGRES_USER="mlops"
+      - POSTGRES_PASSWORD="mlops"
+      - POSTGRES_DB="mlflow"
+    ports:
+      - 5432:5432
+    # volumes:
+      # - db_data:/var/lib/postgresql/data
+
+  mlflow:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/outputs
+    command: bash -c "mlflow server --backend-store-uri=postgresql://mlops:mlops@db:5432/mlflow --default-artifact-root=/mlflow/mlruns --expose-prometheus=yes"
