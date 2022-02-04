@@ -3,7 +3,8 @@ version: "3.9"
 volumes:
   db_data:
   mlflow_data:
-
+  ftp_data:
+  sftp_data:
 services:
   db:
     image: postgres:13.5
@@ -16,27 +17,35 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  ftp_server:
+    image: delfer/alpine-ftp-server
+    ports:
+      - 10021:21
+      - 21:21
+      - 21000-21010:21000-21010
+    environment:
+      USERS: "mlops|mlops|data"
+    volumes:
+      - ftp_data:/data
+
   mlflow:
     depends_on:
       - db
+      - ftp_server
     build:
       context: .
       dockerfile: Dockerfile.mlflow
     ports:
       - 5000:5000
-    volumes:
-      - .:/outputs
-      - mlflow_data:/mlartifacts
     command:
       - bash
       - -c
       - mlflow server
         --host 0.0.0.0
-        --backend-store-uri=postgresql://mlops:mlops@db:5432/mlflow
-        --default-artifact-root="./mlruns"
+        --backend-store-uri="postgresql://mlops:mlops@db:5432/mlflow"
+        --default-artifact-root="ftp://mlops:mlops@ftp_server/data"
         --serve-artifacts
-        --artifacts-destination=/mlartifacts
-        --expose-prometheus=prometheus
+        --artifacts-destination="ftp://mlops:mlops@ftp_server"
 
   # model_server:
   #   depends_on:

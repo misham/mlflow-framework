@@ -4,12 +4,11 @@ import pandas as pd
 import lightgbm as lgb
 import mlflow
 import mlflow.lightgbm
-
+from mlflow.tracking import MlflowClient
 
 # Enable auto logging
 mlflow.set_tracking_uri('http://localhost:5000')
 mlflow.lightgbm.autolog(log_input_examples=True)
-
 
 # Prepare training data
 df = pd.read_csv('data/iris.csv')
@@ -35,7 +34,7 @@ def main():
       "bagging_fraction": 0.9,
       "seed": 42,
     }
-    
+
     model = lgb.train(params, train_data, valid_sets=[train_data])
 
     # Evaluate model
@@ -45,15 +44,11 @@ def main():
     loss = log_loss(y_test, y_proba)
     acc = accuracy_score(y_test, y_pred)
 
-    mlflow.end_run()
-
     # Log metrics
     mlflow.log_metrics({
       "log_loss": loss, 
       "accuracy": acc
     })
-
-    mlflow.log_artifacts('mlruns')
 
   print("Run ID:", run.info.run_id)
 

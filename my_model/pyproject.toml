@@ -14,6 +14,7 @@ boto3 = "1.17.49"
 fastapi = "^0.65.1"
 uvicorn = "^0.14.0"
 dvc = {extras = ["s3"], version = "^2.3.0"}
+pysftp = "^0.2.9"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -5,4 +5,4 @@ ENV TERM xterm-256color
 EXPOSE 5000
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN pip install psycopg2-binary && pip install mlflow[extras]
+RUN pip install pysftp psycopg2-binary && pip install mlflow[extras]
