@@ -1,0 +1,10 @@
+md5: 711e40f268dec67eadf904d3b820cfa8
+frozen: true
+deps:
+- etag: W/"0df554fcc70af0f7c73ac442def51dd5d1eee38b582463c5491e4c9494cd5485"
+  size: 3975
+  path: https://gist.githubusercontent.com/alongubkin/e65a4105e68f2b37b33d1ae1a80c7c92/raw/c693ab60c386b959de6533b5f1feeebbe5de6573/iris.csv
+outs:
+- md5: 341a3b5244f213282b7b0920b729c592
+  size: 3975
+  path: iris.csv
