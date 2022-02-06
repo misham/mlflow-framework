@@ -20,6 +20,15 @@ This uses FTP container for storing artifacts. It takes over local port 21 for t
 brew install libomp
 ```
 
+### Networking
+
+MLFlow sends where to upload the training artifacts from the server. Since this is running inside docker compose environment, it uses the names for those services. Running the training outside that environment requires use of the hostnames. Update the host references so the locally running script knows where the FTP server is.
+#### Mac / *nix
+
+```shell
+echo "127.0.0.1 ftp_server" | sudo tee -a /etc/hosts
+```
+
 ## Running
 
 ```shell
