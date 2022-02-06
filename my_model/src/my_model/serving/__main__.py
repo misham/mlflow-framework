@@ -1,11 +1,16 @@
 import os
+
+import logging
+
+from fastapi import FastAPI
 import uvicorn
+
 import mlflow
 import numpy as np
 import pandas as pd
-from fastapi import FastAPI, Request
 from pydantic import BaseModel
 
+logger = logging.getLogger(__name__)
 
 class Size(BaseModel):
     length: float
@@ -18,12 +23,17 @@ class PredictRequest(BaseModel):
 
 app = FastAPI()
 
-model = mlflow.lightgbm.load_model(f'runs:/{os.environ["MLFLOW_RUN_ID"]}/model')
+mlflow.set_tracking_uri('http://mlflow:5000')
 flower_name_by_index = {0: 'Setosa', 1: 'Versicolor', 2: 'Virginica'}
 
 
-@app.post("/predict")
-def predict(request: PredictRequest):
+@app.post("/predict/{run_id}")
+def predict(run_id, request: PredictRequest):
+
+    logger.info("run_id: %s", run_id)
+    
+    model = mlflow.lightgbm.load_model(f'runs:/{run_id}/model')
+
     df = pd.DataFrame(columns=['sepal.length', 'sepal.width', 'petal.length', 'petal.width'],
                       data=[[request.sepal.length, request.sepal.width, request.petal.length, request.petal.width]])
 
